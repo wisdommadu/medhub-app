@@ -1,0 +1,23 @@
+<!-- templates/visitors.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitors Page - MedHub</title>
+    <style>
+        body { font-family: Arial; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Visitors/Patients List</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <table>
+        <tr><th>ID</th><th>Name</th><th>Age</th></tr>
+        {% for pat in patients %}
+        <tr><td>{{ pat.id }}</td><td>{{ pat.name }}</td><td>{{ pat.age }}</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

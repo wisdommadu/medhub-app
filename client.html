@@ -1,0 +1,37 @@
+<!-- templates/client.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Client Page - MedHub</title>
+    <style>
+        body { font-family: Arial; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Your Client Page</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <h2>Your Record</h2>
+    <p>Name: {{ patient.name }}</p>
+    <p>Age: {{ patient.age }}</p>
+    <p>History: {{ patient.medical_history }}</p>
+    
+    <h2>Your Appointments</h2>
+    <table>
+        <tr><th>Date</th><th>Time</th><th>Doctor ID</th></tr>
+        {% for app in appointments %}
+        <tr><td>{{ app.date }}</td><td>{{ app.time }}</td><td>{{ app.doctor_id }}</td></tr>
+        {% endfor %}
+    </table>
+    
+    <h2>Your Prescriptions</h2>
+    <table>
+        <tr><th>Medication</th><th>Dosage</th><th>Instructions</th></tr>
+        {% for pres in prescriptions %}
+        <tr><td>{{ pres.medication }}</td><td>{{ pres.dosage }}</td><td>{{ pres.instructions }}</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

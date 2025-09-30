@@ -1,0 +1,208 @@
+# app.py - Flask backend for MedHub Web App
+
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'  # Change this to a secure random key
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///medhub.db'  # SQLite for simplicity
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Database Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(20), nullable=False)  # 'admin', 'doctor', 'patient'
+
+class Patient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(100), nullable=False)
+    age = db.Column(db.Integer)
+    medical_history = db.Column(db.Text)
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    doctor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    date = db.Column(db.String(10), nullable=False)  # YYYY-MM-DD
+    time = db.Column(db.String(5), nullable=False)   # HH:MM
+
+class Prescription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    doctor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    medication = db.Column(db.String(100), nullable=False)
+    dosage = db.Column(db.String(50), nullable=False)
+    instructions = db.Column(db.Text)
+
+# Create database if not exists
+with app.app_context():
+    db.create_all()
+
+# Dummy Data (Run once to populate)
+def add_dummy_data():
+    if User.query.count() == 0:
+        # Admin
+        admin = User(username='admin', password=generate_password_hash('adminpass'), role='admin')
+        db.session.add(admin)
+
+        # Doctor
+        doctor = User(username='doctor1', password=generate_password_hash('docpass'), role='doctor')
+        db.session.add(doctor)
+
+        # Patient
+        patient_user = User(username='patient1', password=generate_password_hash('patpass'), role='patient')
+        db.session.add(patient_user)
+        db.session.commit()
+
+        patient = Patient(user_id=patient_user.id, name='John Doe', age=30, medical_history='No known allergies.')
+        db.session.add(patient)
+        db.session.commit()
+
+        # Dummy Appointment
+        appmt = Appointment(patient_id=patient.id, doctor_id=doctor.id, date='2025-10-01', time='10:00')
+        db.session.add(appmt)
+
+        # Dummy Prescription
+        pres = Prescription(patient_id=patient.id, doctor_id=doctor.id, medication='Aspirin', dosage='500mg', instructions='Take once daily.')
+        db.session.add(pres)
+        db.session.commit()
+
+with app.app_context():
+    add_dummy_data()
+
+# Routes
+@app.route('/')
+def index():
+    if 'user_id' in session:
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            session['role'] = user.role
+            return redirect(url_for('dashboard'))
+        flash('Invalid credentials')
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    role = session['role']
+    if role == 'admin':
+        return redirect(url_for('admin_page'))
+    elif role == 'doctor':
+        return redirect(url_for('doctors_appointments'))
+    elif role == 'patient':
+        return redirect(url_for('client_page'))
+    return 'Invalid role'
+
+# Admin Page: Manage Users
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_page():
+    if 'role' not in session or session['role'] != 'admin':
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        username = request.form['username']
+        password = generate_password_hash(request.form['password'])
+        role = request.form['role']
+        new_user = User(username=username, password=password, role=role)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User added')
+    users = User.query.all()
+    return render_template('admin.html', users=users)
+
+# Doctors Appointments Page
+@app.route('/doctors_appointments', methods=['GET', 'POST'])
+def doctors_appointments():
+    if 'role' not in session or session['role'] != 'doctor':
+        return redirect(url_for('login'))
+    doctor_id = session['user_id']
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        date = request.form['date']
+        time = request.form['time']
+        new_appmt = Appointment(patient_id=patient_id, doctor_id=doctor_id, date=date, time=time)
+        db.session.add(new_appmt)
+        db.session.commit()
+        flash('Appointment added')
+    appointments = Appointment.query.filter_by(doctor_id=doctor_id).all()
+    patients = Patient.query.all()
+    return render_template('doctors_appointments.html', appointments=appointments, patients=patients)
+
+# Visitors Page (Assuming list of patients/visitors)
+@app.route('/visitors')
+def visitors_page():
+    if 'role' not in session or session['role'] not in ['doctor', 'admin']:
+        return redirect(url_for('login'))
+    patients = Patient.query.all()
+    return render_template('visitors.html', patients=patients)
+
+# Records Page (Client Records)
+@app.route('/records', methods=['GET', 'POST'])
+def records_page():
+    if 'role' not in session or session['role'] not in ['doctor', 'admin']:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        user_id = request.form['user_id']
+        name = request.form['name']
+        age = request.form['age']
+        history = request.form['history']
+        new_patient = Patient(user_id=user_id, name=name, age=age, medical_history=history)
+        db.session.add(new_patient)
+        db.session.commit()
+        flash('Record added')
+    patients = Patient.query.all()
+    users = User.query.filter_by(role='patient').all()
+    return render_template('records.html', patients=patients, users=users)
+
+# Prescription Page
+@app.route('/prescriptions', methods=['GET', 'POST'])
+def prescription_page():
+    if 'role' not in session or session['role'] != 'doctor':
+        return redirect(url_for('login'))
+    doctor_id = session['user_id']
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        medication = request.form['medication']
+        dosage = request.form['dosage']
+        instructions = request.form['instructions']
+        new_pres = Prescription(patient_id=patient_id, doctor_id=doctor_id, medication=medication, dosage=dosage, instructions=instructions)
+        db.session.add(new_pres)
+        db.session.commit()
+        flash('Prescription added')
+    prescriptions = Prescription.query.filter_by(doctor_id=doctor_id).all()
+    patients = Patient.query.all()
+    return render_template('prescriptions.html', prescriptions=prescriptions, patients=patients)
+
+# Client Page (For Patients)
+@app.route('/client')
+def client_page():
+    if 'role' not in session or session['role'] != 'patient':
+        return redirect(url_for('login'))
+    user_id = session['user_id']
+    patient = Patient.query.filter_by(user_id=user_id).first()
+    appointments = Appointment.query.filter_by(patient_id=patient.id).all()
+    prescriptions = Prescription.query.filter_by(patient_id=patient.id).all()
+    return render_template('client.html', patient=patient, appointments=appointments, prescriptions=prescriptions)
+
+if __name__ == '__main__':
+    app.run(debug=True)

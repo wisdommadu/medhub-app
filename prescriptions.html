@@ -1,0 +1,37 @@
+<!-- templates/prescriptions.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prescription Page - MedHub</title>
+    <style>
+        body { font-family: Arial; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        form { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Prescriptions</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <h2>Add Prescription</h2>
+    <form method="POST">
+        <select name="patient_id">
+            {% for pat in patients %}
+            <option value="{{ pat.id }}">{{ pat.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="medication" placeholder="Medication" required>
+        <input type="text" name="dosage" placeholder="Dosage" required>
+        <textarea name="instructions" placeholder="Instructions"></textarea>
+        <button type="submit">Add</button>
+    </form>
+    <h2>Prescriptions</h2>
+    <table>
+        <tr><th>ID</th><th>Patient ID</th><th>Medication</th><th>Dosage</th><th>Instructions</th></tr>
+        {% for pres in prescriptions %}
+        <tr><td>{{ pres.id }}</td><td>{{ pres.patient_id }}</td><td>{{ pres.medication }}</td><td>{{ pres.dosage }}</td><td>{{ pres.instructions }}</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

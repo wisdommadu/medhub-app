@@ -1,0 +1,36 @@
+<!-- templates/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page - MedHub</title>
+    <style>
+        body { font-family: Arial; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        form { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Admin Page</h1>
+    <a href="{{ url_for('logout') }}">Logout</a>
+    <h2>Add User</h2>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role">
+            <option value="admin">Admin</option>
+            <option value="doctor">Doctor</option>
+            <option value="patient">Patient</option>
+        </select>
+        <button type="submit">Add</button>
+    </form>
+    <h2>Users</h2>
+    <table>
+        <tr><th>ID</th><th>Username</th><th>Role</th></tr>
+        {% for user in users %}
+        <tr><td>{{ user.id }}</td><td>{{ user.username }}</td><td>{{ user.role }}</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
