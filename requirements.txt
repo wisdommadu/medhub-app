@@ -2,15 +2,3 @@ flask
 flask-sqlalchemy
 werkzeug
 gunicorn
-
-medhub-app/
-├── app.py
-├── requirements.txt
-└── templates/
-    ├── login.html
-    ├── admin.html
-    ├── doctors_appointments.html
-    ├── visitors.html
-    ├── records.html
-    ├── prescriptions.html
-    └── client.html
