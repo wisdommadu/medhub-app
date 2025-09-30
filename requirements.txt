@@ -1,7 +1,7 @@
-flask
-flask-sqlalchemy
-werkzeug
-gunicorn
-flask-wtf
-flask-limiter
-requests  # For potential real NIN API calls
+flask==3.0.3
+flask-sqlalchemy==3.1.1
+werkzeug==3.0.4
+gunicorn==23.0.0
+flask-wtf==1.2.1
+flask-limiter==4.1.0
+requests==2.32.3
