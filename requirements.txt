@@ -2,3 +2,6 @@ flask
 flask-sqlalchemy
 werkzeug
 gunicorn
+flask-wtf
+flask-limiter
+requests  # For potential real NIN API calls
