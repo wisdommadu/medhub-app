@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'Wizzym15'  # Replace with a secure key
+app.config['SECRET_KEY'] = 'f9bf78b9a18ce6d46a0cd2b0b86df9da'  # Replace with a secure key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////opt/render/medhub/medhub.db'  # Render disk path
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
