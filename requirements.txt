@@ -1,10 +1,9 @@
 # requirements.txt
-Flask==3.0.3
-Flask-SQLAlchemy==3.1.1
-Flask-Login==0.6.3
-Flask-WTF==1.2.1
-Werkzeug==3.0.3
-python-dotenv==1.0.1
-gunicorn==22.0.0  # For production WSGI server
-psycopg2-binary==2.9.9  # For PostgreSQL
-email-validator==2.1.1  # For email validation if needed
+Flask
+Flask-SQLAlchemy=3.1
+Flask-Login
+Flask-WTF
+Werkzeug
+python-dotenv
+gunicorn
+psycopg2-binary
