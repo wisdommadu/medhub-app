@@ -1,0 +1,23 @@
+<!-- templates/admin_dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+    <h2>Admin Dashboard</h2>
+        <a href="/admin/add_user" class="btn btn-primary">Add User</a>
+            <h3>Users</h3>
+                <ul>
+                        {% for user in users %}
+                                    <li>{{ user.username }} - {{ user.role }}</li>
+                                            {% endfor %}
+                                                </ul>
+                                                    <h3>Doctor Applications</h3>
+                                                        <ul>
+                                                                {% for app in applications %}
+                                                                            <li>{{ app.full_name }} - Status: {{ app.status }}
+                                                                                            {% if app.status == 'pending' %}
+                                                                                                                <a href="/admin/approve_application/{{ app.id }}" class="btn btn-sm btn-success">Approve</a>
+                                                                                                                                {% endif %}
+                                                                                                                                            </li>
+                                                                                                                                                    {% endfor %}
+                                                                                                                                                        </ul>
+                                                                                                                                                        {% endblock %}-->

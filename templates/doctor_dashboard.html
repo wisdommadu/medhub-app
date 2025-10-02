@@ -1,0 +1,33 @@
+<!-- templates/doctor_dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}Doctor Dashboard{% endblock %}
+{% block content %}
+    <h2>Doctor Dashboard</h2>
+        <h3>Update Availability</h3>
+            <form method="POST" action="/doctor/update_availability">
+                    <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="availability" id="availability" {% if current_user.availability %}checked{% endif %}>
+                                            <label class="form-check-label" for="availability">Available</label>
+                                                    </div>
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                                </form>
+                                                                    <h3>Appointments</h3>
+                                                                        <ul>
+                                                                                {% for appt in appointments %}
+                                                                                            <li>{{ appt.date }} with Patient ID {{ appt.patient_id }} - Status: {{ appt.status }}
+                                                                                                            {% if appt.status == 'pending' %}
+                                                                                                                                <a href="/doctor/accept_appointment/{{ appt.id }}" class="btn btn-sm btn-success">Accept</a>
+                                                                                                                                                {% endif %}
+                                                                                                                                                            </li>
+                                                                                                                                                                    {% endfor %}
+                                                                                                                                                                        </ul>
+                                                                                                                                                                            <h3>Patients</h3>
+                                                                                                                                                                                <ul>
+                                                                                                                                                                                        {% for patient in patients %}
+                                                                                                                                                                                                    <li>{{ patient.full_name }} 
+                                                                                                                                                                                                                    <a href="/doctor/add_prescription/{{ patient.id }}" class="btn btn-sm btn-info">Add Prescription</a>
+                                                                                                                                                                                                                                    <a href="/doctor/add_report/{{ patient.id }}" class="btn btn-sm btn-info">Add Report</a>
+                                                                                                                                                                                                                                                </li>
+                                                                                                                                                                                                                                                        {% endfor %}
+                                                                                                                                                                                                                                                            </ul>
+                                                                                                                                                                                                                                                            {% endblock %}-->

@@ -1,0 +1,13 @@
+<!-- templates/add_prescription.html -->
+{% extends 'base.html' %}
+{% block title %}Add Prescription{% endblock %}
+{% block content %}
+    <h2>Add Prescription for {{ patient.full_name }}</h2>
+        <form method="POST">
+                <div class="mb-3">
+                            <label for="content" class="form-label">Prescription Content</label>
+                                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                                                </div>
+                                                        <button type="submit" class="btn btn-primary">Add</button>
+                                                            </form>
+                                                            {% endblock %}-->

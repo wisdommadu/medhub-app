@@ -1,0 +1,11 @@
+<!-- templates/reports.html -->
+{% extends 'base.html' %}
+{% block title %}Medical Reports{% endblock %}
+{% block content %}
+    <h2>Your Medical Reports</h2>
+        <ul>
+                {% for report in reports %}
+                            <li>{{ report.date }}: <a href="/patient/download_report/{{ report.id }}">{{ report.filename }}</a></li>
+                                    {% endfor %}
+                                        </ul>
+                                        {% endblock %}-->

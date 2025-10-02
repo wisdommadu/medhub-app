@@ -1,0 +1,13 @@
+<!-- templates/add_report.html -->
+{% extends 'base.html' %}
+{% block title %}Add Report{% endblock %}
+{% block content %}
+    <h2>Add Report for {{ patient.full_name }}</h2>
+        <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                            <label for="file" class="form-label">Upload Report (PDF)</label>
+                                        <input type="file" class="form-control" id="file" name="file" required>
+                                                </div>
+                                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                                            </form>
+                                                            {% endblock %}-->

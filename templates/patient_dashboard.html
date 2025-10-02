@@ -1,0 +1,20 @@
+<!-- templates/patient_dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}Patient Dashboard{% endblock %}
+{% block content %}
+    <h2>Patient Dashboard</h2>
+        {% if session.paid %}
+                <h3>Appointments</h3>
+                        <ul>
+                                    {% for appt in appointments %}
+                                                    <li>{{ appt.date }} with Doctor ID {{ appt.doctor_id }} - Status: {{ appt.status }}</li>
+                                                                {% endfor %}
+                                                                        </ul>
+                                                                                <a href="/patient/book_appointment" class="btn btn-primary">Book Appointment</a>
+                                                                                        <a href="/patient/prescriptions" class="btn btn-secondary">Prescriptions</a>
+                                                                                                <a href="/patient/reports" class="btn btn-secondary">Medical Reports</a>
+                                                                                                    {% else %}
+                                                                                                            <p>Please make a payment to access full features.</p>
+                                                                                                                    <a href="/patient/payment" class="btn btn-primary">Make Payment</a>
+                                                                                                                        {% endif %}
+                                                                                                                        {% endblock %}-->

@@ -1,0 +1,11 @@
+<!-- templates/prescriptions.html -->
+{% extends 'base.html' %}
+{% block title %}Prescriptions{% endblock %}
+{% block content %}
+    <h2>Your Prescriptions</h2>
+        <ul>
+                {% for pres in prescriptions %}
+                            <li>{{ pres.date }}: {{ pres.content }} by Doctor ID {{ pres.doctor_id }}</li>
+                                    {% endfor %}
+                                        </ul>
+                                        {% endblock %}-->
